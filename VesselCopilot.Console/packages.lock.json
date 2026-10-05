@@ -57,6 +57,15 @@
           "System.ClientModel": "1.15.0"
         }
       },
+      "Microsoft.Extensions.AI.Evaluation.Quality": {
+        "type": "Direct",
+        "requested": "[10.10.0, )",
+        "resolved": "10.10.0",
+        "contentHash": "RcYLnPwShmerXorN23xSGIb/n8pn/NZ34d3nRksdsdYi13tNMNW2N+k+VJmQNZXDUUTXztbs8RyHxVJg3Lhhzw==",
+        "dependencies": {
+          "Microsoft.Extensions.AI.Evaluation": "10.10.0"
+        }
+      },
       "Microsoft.Extensions.Configuration.Binder": {
         "type": "Direct",
         "requested": "[10.0.0, )",

@@ -1,5 +1,6 @@
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.AI;
+using Microsoft.Extensions.Configuration;
 
 public static partial class Ingest
 {
@@ -18,7 +19,9 @@ public static partial class Ingest
         {
             string text = await File.ReadAllTextAsync(file, cancellationToken);
             string fileKey = Path.GetFileNameWithoutExtension(file);
-            List<string> chunks = TextChunker.Chunk(text);
+            List<string> chunks = TextChunker.Chunk(text,
+                AppConfig.Config.GetValue("Chunking:MaxChars", 1000),
+                AppConfig.Config.GetValue("Chunking:OverlapChars", 150));
             for (int index = 0; index < chunks.Count; index++)
                 documents.Add(new VesselChunk
                 {

@@ -40,6 +40,7 @@ Review started on 2026-10-06 against the uploaded C# student guide, revised Octo
 | 1.3 | Release compilation passed | 20 checks passed | Default query invoked both functions and returned the exact synthetic position and HW-07 procedure |
 | 2.1 | Release compilation passed | 28 checks passed | Embeddings passed at 3072 dimensions on existing `text-embedding-3-large`; Search ingestion/retrieval blocked |
 | 2.2 | Workshop console compilation passed; upstream reference build still pending | 33 checks passed | Local-source live generation cited HW-07 and abstained on crew scheduling; Search and deployed reference-app checks blocked |
+| 2.3 | Core and optional quality-evaluation compilation passed | 37 checks passed | Search-dependent hit@3, before/after measurements, injection retrieval, and model-judge quality checks blocked |
 
 ## Verified Corrections
 
@@ -61,6 +62,8 @@ Review started on 2026-10-06 against the uploaded C# student guide, revised Octo
 - Escaped entire retrieved passages, not merely exact closing tags, and validated citation IDs before display. Generated citations are not proof of factual faithfulness.
 - Preserved filename-based source IDs across ingestion, citations, and evaluation. The human-readable `Title:` metadata is not used as the canonical citation ID.
 - Pinned the official RAG reference app as a Git submodule; students must initialize submodules, and ZIP downloads alone are insufficient.
+- Supplied the complete ten-question ground-truth set, kept unanswerable questions out of hit@3, and tested top-three cutoff behavior. Three documents with k=3 are not a discriminating retrieval benchmark.
+- Kept the injection fixture outside the default data folder and documented source/output cleanup, avoiding accidental indexing into the approved baseline corpus.
 
 ## Resource Authorization
 

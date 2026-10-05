@@ -30,11 +30,13 @@ try
             Console.WriteLine((await GroundedAnswer.FromSourcesAsync(chatClient,
                 positional.Length > 1 ? string.Join(" ", positional.Skip(1)) : "What must the watch log during heavy weather?", sources, request.Token)).Answer);
             break;
+        case "eval": await RetrievalEval.RunAsync(cancellation.Token); break;
+        case "quality": await QualityEval.RunAsync(chatClient, request.Token); break;
         case "embedding-check":
             var vector = await EmbeddingFactory.VectorAsync("Synthetic HW-07 heavy-weather procedure", request.Token);
             Console.WriteLine($"Embedding dimensions verified: {vector.Length}");
             break;
-        default: Console.Error.WriteLine("Unknown mode. Use hello, compare, chat, assess, tools, ingest, search, ask, grounding-check, or embedding-check."); Environment.ExitCode = 2; break;
+        default: Console.Error.WriteLine("Modes: hello, compare, chat, assess, tools, ingest, search, ask, grounding-check, embedding-check, eval, quality."); Environment.ExitCode = 2; break;
     }
 }
 catch (Exception exception)

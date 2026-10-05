@@ -81,3 +81,9 @@ Check("invented citation rejected", () => Equal(false, GroundedAnswer.HasValidCi
 Check("missing citation rejected", () => Equal(false, GroundedAnswer.HasValidCitations("Log hourly.", approved)));
 Check("exact abstention accepted", () => Equal(true, GroundedAnswer.HasValidCitations(GroundedAnswer.Abstention, approved)));
 Console.WriteLine($"{passed} total checks passed. No Azure calls were made.");
+Check("ten evaluation questions supplied", () => Equal(10, RetrievalEval.Questions.Length));
+Check("expected source counted as hit", () => Equal(true, RetrievalEval.IsHit(new("question", "HW-07-heavy-weather"), approved)));
+Check("unanswerable questions excluded from hit metric", () => Equal(false, RetrievalEval.IsHit(new("question", ""), approved)));
+Check("result below top three excluded", () => Equal(false, RetrievalEval.IsHit(new("question", "HW-07-heavy-weather"),
+    new[] { new VesselChunk { Title = "A" }, new VesselChunk { Title = "B" }, new VesselChunk { Title = "C" }, approved[0] })));
+Console.WriteLine($"{passed} total checks passed. No Azure calls were made.");
