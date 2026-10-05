@@ -39,7 +39,7 @@ Complete these steps before Day 1. Do not create chargeable resources until your
 8. **Record nonsecret settings.** Obtain the Foundry project endpoint (including `/api/projects/<project>`), OpenAI endpoint, chat deployment names, embedding deployment and dimensions, Search endpoint and index name. Never substitute the project endpoint for the OpenAI endpoint or vice versa.
 9. **Protect secrets.** Never commit API keys, access tokens, connection strings, tenant-specific configuration, or student data. Use environment variables or `dotnet user-secrets` for local settings; user secrets are not encrypted and are not a production secret store. Do not paste secrets into chat.
 10. **Get the lab source.** Clone the instructor's repository and select the required branch. The complete patched Lab 2.2 reference source is included directly; no submodule initialization is needed. This repository is currently local and must be published or shared before students can retrieve it from another machine.
-11. **Check dependencies.** Follow each lab's pinned package versions, restore dependencies, and run its documented preflight and tests before making live calls. Do not replace pinned prerelease versions with an untested latest version.
+11. **Check dependencies.** Use the explicitly pinned stable versions in [docs/STABLE-PACKAGES.md](docs/STABLE-PACKAGES.md). Restore in locked mode and run the documented checks before making live calls. Do not select preview/beta package releases or assume a successful build proves runtime SDK compatibility.
 12. **Prepare safe data and cleanup.** Use only the synthetic dataset. Confirm who owns each resource and who may delete it. Agree on a spending limit and a cleanup time before the workshop.
 
 ### Shell Conventions
@@ -79,7 +79,7 @@ For another machine, replace the local path with the instructor's published repo
 
 Start with [LAB.md](LAB.md) for Lab 1.1. Later checkpoints include their own `docs/LAB-<number>.md` guide. The shared [review report](docs/REVIEW.md) records all remediations and verification limits; use `main` for the complete final source and report.
 
-After confirming deployment names and replacing placeholders, run:
+Configure both Foundry endpoints from Lab 1.1 onward: stable model calls use the OpenAI resource's `/openai/v1/` path, not the incompatible project Responses adapter. After confirming deployment names and replacing placeholders, run:
 
 ```bash
 dotnet restore VesselCopilot.Console --locked-mode
@@ -98,9 +98,11 @@ The review's fallback deployment was named `workshop-primary` even though its mo
 
 ## Validation And Review
 
-The final source passes 46 local checks. All nine checkpoint checkouts compiled and passed their respective checks. Live verification covered two-model comparison, streaming and typed output, function calling, agent sessions/tools, approval and rejection, real MCP exchanges, and sequential workflows. Application Insights confirmed correlated workflow, agent, model, and tool spans. The custom graphs and patched reference core passed dependency vulnerability audits.
+The stable edition passes 47 local checks. The full reference web solution builds, including backend, frontend, tests, document-preparation CLI, and Functions host. Live verification covered two-model comparison, typed output, function calling, agent sessions/tools, real MCP exchanges, and sequential workflows. The custom and reference core graphs contain no prerelease packages and passed vulnerability audits. See [docs/STABLE-VALIDATION.md](docs/STABLE-VALIDATION.md) for the latest evidence; the older branch ledger records the initial edition.
 
-Day 2 is **partially verified**, not fully certified: live embeddings and generation from local synthetic sources passed, but no Search service exists and the user authorized existing resources only. Search ingestion/retrieval, end-to-end RAG, retrieval measurements, indexed injection defense, cloud deployment, and optional quality scores remain unverified. The reference backend/frontend builds; its runtime and upstream tests additionally require .NET 8. See [docs/REVIEW.md](docs/REVIEW.md) for exact results and remediation.
+The workshop's Lab 2 ingestion, keyword/vector/hybrid retrieval, full hybrid-grounded answer, abstention, retrieval metrics, chunk-size comparison, and quality judging passed against the existing Search service after the user assigned its roles. The isolated injection exercise first blocked an invalid-citation response and then returned the expected approved citation. The separate reference app's deployed UI is **not certified**: no Storage account or application host is available, .NET 8 is absent, and Docker WSL integration is unavailable. Its tests compile but cannot execute here. MAUI additionally requires missing platform workloads.
+
+The corrected [stable student Word guide](docs/STUDENT-LAB-GUIDE-STABLE.docx) replaces obsolete inline SDK snippets with checkpoint source pointers. The original uploaded guide is preserved unchanged.
 
 ## Cleanup
 

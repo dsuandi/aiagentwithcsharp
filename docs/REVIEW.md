@@ -2,6 +2,8 @@
 
 Review started on 2026-10-06 against the uploaded C# student guide, revised October 2026. This report distinguishes findings from verified fixes and separates compilation, local behavior, and live Azure behavior.
 
+**Latest edition:** the user-requested stable migration supersedes the initial package and missing-Search observations below. Read STABLE-PACKAGES.md and STABLE-VALIDATION.md for current versions and results. The earlier evidence is retained as history, not installation guidance.
+
 ## Initial Findings
 
 | Finding | Student Impact | Remediation | Status |
@@ -58,7 +60,7 @@ Counts record checks available at each initial checkpoint. The final suite has 4
 
 ## Verified Corrections
 
-- Pinned `Microsoft.Agents.AI.Foundry` to `1.23.0-preview.260928.1` and `Azure.Identity` to `1.21.0`. Azure.Identity 1.17.0 conflicted with credential types in the adapter's Azure.Core 1.62.0 dependency; the corrected graph compiles.
+- The initial review pinned and verified a prerelease Foundry adapter. The current edition replaces it with stable 1.5.0 and uses the explicitly requested stable graph; see STABLE-PACKAGES.md rather than reproducing the historical setup.
 - Explicitly opted into the guide's experimental Responses API with `OPENAI001`; other diagnostics remain enabled.
 - Replaced the deprecated managed identity constructor with `ManagedIdentityId.SystemAssigned`.
 - Separated positional modes/questions from configuration arguments before calling `AddCommandLine`. This also prevents settings overrides from entering a model prompt.

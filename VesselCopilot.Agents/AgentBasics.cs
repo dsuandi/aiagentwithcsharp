@@ -11,7 +11,7 @@ public static class AgentBasics
     };
 
     public static AIAgent CreateAgent(AIProjectClient projectClient, bool tools = false) =>
-        projectClient.AsAIAgent(model: AppConfig.Model.DeploymentName, name: "VesselOpsAgent", instructions: Instructions,
+        new ChatClientAgent(ChatClientFactory.Create(), name: "VesselOpsAgent", instructions: Instructions,
             tools: tools ? [AIFunctionFactory.Create(VesselTools.GetVesselPosition), AIFunctionFactory.Create(VesselTools.GetApprovedProcedure)] : null);
 
     public static async Task HelloAsync(AIProjectClient projectClient, CancellationToken cancellationToken)
