@@ -6,7 +6,7 @@ Complete the root README setup checklist. Use an instructor-approved existing Fo
 
 1. Switch to `lab-1.1-provision-and-connect`.
 2. Open `VesselCopilot.Console/appsettings.json`. Replace `Foundry:ProjectEndpoint` with your project endpoint, and set each profile's deployment name to the exact name in your portal. Model name and deployment name are not interchangeable.
-3. Keep Day 2 Search and OpenAI placeholders until the relevant lab. Do not add credentials to the file.
+3. Set the OpenAI resource endpoint now as well as the project endpoint. Stable model access uses the resource's `/openai/v1/` path; only Search placeholders can wait until Day 2. Do not add credentials to the file.
 4. Run `dotnet restore VesselCopilot.Console --locked-mode` and `dotnet build VesselCopilot.Console -c Release`.
 5. Run `dotnet run --project VesselCopilot.Tests -c Release` for local configuration checks.
 6. Run `dotnet run --project VesselCopilot.Console -c Release -- hello`.
