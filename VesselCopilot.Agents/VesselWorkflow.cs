@@ -27,8 +27,7 @@ public static class VesselWorkflow
     public static async Task RunAsync(AIProjectClient projectClient, CancellationToken cancellationToken)
     {
         using Activity? activity = ActivitySource.StartActivity("vessel.workflow");
-        using IChatClient client = projectClient.GetProjectOpenAIClient().GetProjectResponsesClient()
-            .AsIChatClient(AppConfig.Model.DeploymentName);
+        using IChatClient client = ChatClientFactory.Create();
         AIAgent intake = CreateAgent(client, "Intake",
             "Extract vessel ID, equipment, symptoms and urgency (Low/Medium/High) as a short list. Do not propose fixes. All data is synthetic.");
         AIAgent knowledge = CreateAgent(client, "Knowledge",

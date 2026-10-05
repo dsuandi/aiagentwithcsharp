@@ -1,6 +1,6 @@
 # Lab 2.3: Retrieval Evaluation
 
-Live retrieval scores are unverified until a Search service and populated training index are available. Do not substitute local metric checks for a real measurement.
+The stable edition's live baseline and 400-character chunk comparison both scored hit@3 = 8/8 for Text, Vector, and Hybrid. Primary and fallback quality judges returned relevance 4 and groundedness 5. The corpus is too small to make these scores discriminating; see STABLE-VALIDATION.md for the exact injection outcome and remaining reference-app gaps.
 
 1. Switch to `lab-2.3-retrieval-evaluation`, build the console project, and run the local checks.
 2. Review the ten questions in `RetrievalEval.Questions`: eight answerable and two out of corpus. Edit or extend them for your own synthetic corpus.

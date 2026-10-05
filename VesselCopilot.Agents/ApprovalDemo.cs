@@ -28,7 +28,7 @@ public static class ApprovalDemo
     public static async Task RunAsync(AIProjectClient projectClient, CancellationToken cancellationToken)
     {
         AIFunction tool = new ApprovalRequiredAIFunction(AIFunctionFactory.Create(VesselTools.CreateMaintenanceDraft));
-        AIAgent agent = projectClient.AsAIAgent(model: AppConfig.Model.DeploymentName, name: "VesselOpsAgent",
+        AIAgent agent = new ChatClientAgent(ChatClientFactory.Create(), name: "VesselOpsAgent",
             instructions: AgentBasics.Instructions,
             tools: [AIFunctionFactory.Create(VesselTools.GetVesselPosition), tool]);
         AgentSession session = await agent.CreateSessionAsync(cancellationToken);

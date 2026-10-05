@@ -46,7 +46,7 @@ public static class McpDemo
             .Where(tool => tool.Name == "get_vessel_voyage").ToList();
         if (tools.Count != 1) throw new InvalidOperationException("The approved MCP voyage tool is missing.");
         Console.WriteLine("MCP tools: get_vessel_voyage");
-        AIAgent agent = projectClient.AsAIAgent(model: AppConfig.Model.DeploymentName, name: "VesselOpsAgent",
+        AIAgent agent = new ChatClientAgent(ChatClientFactory.Create(), name: "VesselOpsAgent",
             instructions: AgentBasics.Instructions,
             tools: [.. tools.Cast<AITool>(), AIFunctionFactory.Create(VesselTools.GetVesselPosition)]);
         Console.WriteLine((await agent.RunAsync("Where is VL-204 now, and what is its current voyage and ETA?",

@@ -1,6 +1,6 @@
 # Lab 2.2: Reference App And Grounded Answers
 
-Cloud deployment and full Search-to-answer checks are blocked in this review: the user authorized existing resources only, and no Search service is available. Do not run provisioning commands against the current environment.
+The workshop console's full Search-to-answer and abstention checks passed on the existing Search service. The separate reference-app deployment/UI remains unverified: existing-resources-only authorization is unchanged, and Storage/application-host resources are unavailable. Do not run provisioning commands against the current environment.
 
 1. Switch to `lab-2.2-grounded-rag`.
 2. The complete patched reference source is included under `reference/rag-app`; no submodule initialization is needed. Read `WORKSHOP-PATCHES.md` for upstream commit, license provenance, and security fixes.
