@@ -18,7 +18,13 @@ try
         case "chat": await ChatLoop.RunAsync(chatClient, cancellation.Token); break;
         case "assess": await VoyageAssessment.RunAsync(chatClient, request.Token); break;
         case "tools": await ToolDemo.RunAsync(chatClient, string.Join(" ", positional.Skip(1)), request.Token); break;
-        default: Console.Error.WriteLine("Unknown mode. Use hello, compare, chat, assess, or tools."); Environment.ExitCode = 2; break;
+        case "ingest": await Ingest.RunAsync(cancellation.Token); break;
+        case "search": await SearchDemo.RunAsync(positional.Length > 1 ? string.Join(" ", positional.Skip(1)) : "heavy weather lashing", request.Token); break;
+        case "embedding-check":
+            var vector = await EmbeddingFactory.VectorAsync("Synthetic HW-07 heavy-weather procedure", request.Token);
+            Console.WriteLine($"Embedding dimensions verified: {vector.Length}");
+            break;
+        default: Console.Error.WriteLine("Unknown mode. Use hello, compare, chat, assess, tools, ingest, search, or embedding-check."); Environment.ExitCode = 2; break;
     }
 }
 catch (Exception exception)

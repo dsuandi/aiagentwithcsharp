@@ -2,6 +2,16 @@
   "version": 1,
   "dependencies": {
     "net10.0": {
+      "Azure.AI.OpenAI": {
+        "type": "Direct",
+        "requested": "[2.9.0-beta.1, )",
+        "resolved": "2.9.0-beta.1",
+        "contentHash": "CgIYDuCSOFx+yPuCdK7iz71OW2envfVeIE/YoNYK+mhr6bxgIJV6jfBF+mV9aHDQ6KVQjeSL6OZ7x90XrvsoRg==",
+        "dependencies": {
+          "Azure.Core": "1.51.1",
+          "OpenAI": "2.9.1"
+        }
+      },
       "Azure.Identity": {
         "type": "Direct",
         "requested": "[1.21.0, )",
@@ -9,6 +19,15 @@
         "contentHash": "GeFv8sGwRKvDKwI2WFy8r0mhmlxEVZg24Sit2NogTjiSO8RVjllWM65OT6e1sKjOvG8V74y7hAbaELUUPjZQSw==",
         "dependencies": {
           "Azure.Core": "1.53.0"
+        }
+      },
+      "Azure.Search.Documents": {
+        "type": "Direct",
+        "requested": "[12.0.0, )",
+        "resolved": "12.0.0",
+        "contentHash": "HziwTmbadPNT/Q0Bau3n7ubQQJde5AWGi2LpzA30JwDasJiY5ogyrp7pALpvUy5HYcgSMRrRdLtahgTT5TPyrA==",
+        "dependencies": {
+          "Azure.Core": "1.54.0"
         }
       },
       "Microsoft.Agents.AI.Foundry": {

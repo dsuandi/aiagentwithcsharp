@@ -38,6 +38,7 @@ Review started on 2026-10-06 against the uploaded C# student guide, revised Octo
 | 1.1 | Release build passed without warnings or errors | 10 configuration checks passed | Fallback `workshop-primary` passed (31/64 tokens); primary `gpt-6-luna` timed out at 60 seconds |
 | 1.2 | Release compilation passed | 13 checks passed | Two streamed turns with follow-up context passed; typed assessment returned valid Medium risk |
 | 1.3 | Release compilation passed | 20 checks passed | Default query invoked both functions and returned the exact synthetic position and HW-07 procedure |
+| 2.1 | Release compilation passed | 28 checks passed | Embeddings passed at 3072 dimensions on existing `text-embedding-3-large`; Search ingestion/retrieval blocked |
 
 ## Verified Corrections
 
@@ -52,6 +53,10 @@ Review started on 2026-10-06 against the uploaded C# student guide, revised Octo
 - Trimmed history by complete pairs so the retained conversation cannot begin with an orphaned assistant answer. The chat session itself is not limited to 60 seconds; each model turn is.
 - Corrected vessel identifiers to `\AVL-[0-9]{3}\z`: the original regex accepted a final newline and Unicode decimal digits.
 - Confirmed live invocation of both tools. Tool arguments and returned bodies are no longer printed in diagnostic logs.
+- Reproduced the original chunker's oversized single-paragraph defect with a failing check, then made the same check pass using bounded overlapping character windows. Invalid overlaps are rejected.
+- Made the synthetic data path independent of the current working directory and copied the dataset to build output.
+- Passed requested dimensions to embedding generation and checked returned dimensions and batch counts before upload. The actual environment uses `text-embedding-3-large` (3072), not the guide's small deployment (1536).
+- Checked individual Search upload results. Documented that merge-or-upload does not remove stale chunk keys after source removal or chunking changes.
 
 ## Resource Authorization
 
