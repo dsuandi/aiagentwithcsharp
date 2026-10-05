@@ -42,31 +42,27 @@ internal static class WebApplicationExtensions
         IConfiguration config,
         [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        var deploymentId = config["AZURE_OPENAI_CHATGPT_DEPLOYMENT"];
-        var response = await client.GetChatCompletionsStreamingAsync(
-            new ChatCompletionsOptions
+        var deploymentId = config["AzureOpenAiChatGptDeployment"] ?? config["OpenAiChatGptDeployment"];
+        ArgumentNullException.ThrowIfNullOrWhiteSpace(deploymentId);
+        var response = client.GetChatClient(deploymentId).CompleteChatStreamingAsync(
+            new OpenAI.Chat.ChatMessage[]
             {
-                DeploymentName = deploymentId,
-                Messages =
-                {
-                    new ChatRequestSystemMessage("""
+                    new OpenAI.Chat.SystemChatMessage("""
                         You're an AI assistant for developers, helping them write code more efficiently.
                         You're name is **Blazor 📎 Clippy** and you're an expert Blazor developer.
                         You're also an expert in ASP.NET Core, C#, TypeScript, and even JavaScript.
                         You will always reply with a Markdown formatted response.
                         """),
-                    new ChatRequestUserMessage("What's your name?"),
-                    new ChatRequestAssistantMessage("Hi, my name is **Blazor 📎 Clippy**! Nice to meet you."),
-                    new ChatRequestUserMessage(prompt.Prompt)
-                }
-            }, cancellationToken);
+                    new OpenAI.Chat.UserChatMessage("What's your name?"),
+                    new OpenAI.Chat.AssistantChatMessage("Hi, my name is **Blazor 📎 Clippy**! Nice to meet you."),
+                    new OpenAI.Chat.UserChatMessage(prompt.Prompt)
+            }, cancellationToken: cancellationToken);
 
         await foreach (var choice in response.WithCancellation(cancellationToken))
         {
-            if (choice.ContentUpdate is { Length: > 0 })
-            {
-                yield return new ChatChunkResponse(choice.ContentUpdate.Length, choice.ContentUpdate);
-            }
+            foreach (var content in choice.ContentUpdate)
+                if (!string.IsNullOrEmpty(content.Text))
+                    yield return new ChatChunkResponse(content.Text.Length, content.Text);
         }
     }
 
@@ -146,14 +142,11 @@ internal static class WebApplicationExtensions
         IConfiguration config,
         CancellationToken cancellationToken)
     {
-        var result = await client.GetImageGenerationsAsync(new ImageGenerationOptions
-        {
-            Prompt = prompt.Prompt,
-        },
-        cancellationToken);
-
-        var imageUrls = result.Value.Data.Select(i => i.Url).ToList();
-        var response = new ImageResponse(result.Value.Created, imageUrls);
+        string deployment = config["AzureOpenAiImageDeployment"] ?? config["OpenAiImageDeployment"]
+            ?? throw new InvalidOperationException("An image deployment must be configured for image generation.");
+        var result = await client.GetImageClient(deployment).GenerateImageAsync(prompt.Prompt,
+            cancellationToken: cancellationToken);
+        var response = new ImageResponse(DateTimeOffset.UtcNow, [result.Value.ImageUri]);
 
         return TypedResults.Ok(response);
     }
