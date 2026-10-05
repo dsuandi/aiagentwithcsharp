@@ -15,3 +15,5 @@ TestResults/
 artifacts/
 *.docx
 /reference/azure-search-openai-demo-csharp/
+__pycache__/
+*.pyc
