@@ -23,7 +23,7 @@ public static partial class Ingest
                 documents.Add(new VesselChunk
                 {
                     Id = InvalidKeyChars().Replace($"{fileKey}-{index}", "_"),
-                    Title = ReadMetadata(text, "Title"),
+                    Title = fileKey,
                     DocType = ReadMetadata(text, "Type"),
                     Revision = ReadMetadata(text, "Revision"),
                     Content = chunks[index]

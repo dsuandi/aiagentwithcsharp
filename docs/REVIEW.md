@@ -39,6 +39,7 @@ Review started on 2026-10-06 against the uploaded C# student guide, revised Octo
 | 1.2 | Release compilation passed | 13 checks passed | Two streamed turns with follow-up context passed; typed assessment returned valid Medium risk |
 | 1.3 | Release compilation passed | 20 checks passed | Default query invoked both functions and returned the exact synthetic position and HW-07 procedure |
 | 2.1 | Release compilation passed | 28 checks passed | Embeddings passed at 3072 dimensions on existing `text-embedding-3-large`; Search ingestion/retrieval blocked |
+| 2.2 | Workshop console compilation passed; upstream reference build still pending | 33 checks passed | Local-source live generation cited HW-07 and abstained on crew scheduling; Search and deployed reference-app checks blocked |
 
 ## Verified Corrections
 
@@ -57,6 +58,9 @@ Review started on 2026-10-06 against the uploaded C# student guide, revised Octo
 - Made the synthetic data path independent of the current working directory and copied the dataset to build output.
 - Passed requested dimensions to embedding generation and checked returned dimensions and batch counts before upload. The actual environment uses `text-embedding-3-large` (3072), not the guide's small deployment (1536).
 - Checked individual Search upload results. Documented that merge-or-upload does not remove stale chunk keys after source removal or chunking changes.
+- Escaped entire retrieved passages, not merely exact closing tags, and validated citation IDs before display. Generated citations are not proof of factual faithfulness.
+- Preserved filename-based source IDs across ingestion, citations, and evaluation. The human-readable `Title:` metadata is not used as the canonical citation ID.
+- Pinned the official RAG reference app as a Git submodule; students must initialize submodules, and ZIP downloads alone are insufficient.
 
 ## Resource Authorization
 

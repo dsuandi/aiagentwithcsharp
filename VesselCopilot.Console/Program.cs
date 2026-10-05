@@ -20,11 +20,21 @@ try
         case "tools": await ToolDemo.RunAsync(chatClient, string.Join(" ", positional.Skip(1)), request.Token); break;
         case "ingest": await Ingest.RunAsync(cancellation.Token); break;
         case "search": await SearchDemo.RunAsync(positional.Length > 1 ? string.Join(" ", positional.Skip(1)) : "heavy weather lashing", request.Token); break;
+        case "ask":
+            Console.WriteLine((await GroundedAnswer.AskAsync(chatClient,
+                positional.Length > 1 ? string.Join(" ", positional.Skip(1)) : "What must the watch log during heavy weather?", request.Token)).Answer);
+            break;
+        case "grounding-check":
+            List<VesselChunk> sources = await Ingest.ReadDocumentsAsync(request.Token);
+            Console.WriteLine("Generation-only check using local synthetic sources; Search is not exercised.");
+            Console.WriteLine((await GroundedAnswer.FromSourcesAsync(chatClient,
+                positional.Length > 1 ? string.Join(" ", positional.Skip(1)) : "What must the watch log during heavy weather?", sources, request.Token)).Answer);
+            break;
         case "embedding-check":
             var vector = await EmbeddingFactory.VectorAsync("Synthetic HW-07 heavy-weather procedure", request.Token);
             Console.WriteLine($"Embedding dimensions verified: {vector.Length}");
             break;
-        default: Console.Error.WriteLine("Unknown mode. Use hello, compare, chat, assess, tools, ingest, search, or embedding-check."); Environment.ExitCode = 2; break;
+        default: Console.Error.WriteLine("Unknown mode. Use hello, compare, chat, assess, tools, ingest, search, ask, grounding-check, or embedding-check."); Environment.ExitCode = 2; break;
     }
 }
 catch (Exception exception)
