@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Azure;
 using Azure.AI.FormRecognizer.DocumentAnalysis;
-using Azure.AI.OpenAI;
+using OpenAI;
 using Azure.Identity;
 using Azure.Search.Documents;
 using Azure.Search.Documents.Indexes;
@@ -36,7 +36,7 @@ public class AzureSearchEmbedServiceTest
         var blobContainer = "test";
 
         var azureCredential = new DefaultAzureCredential();
-        var openAIClient = new OpenAIClient(new Uri(openAIEndpoint), azureCredential);
+        var openAIClient = Shared.Services.ModelClientFactory.CreateAzure(new Uri(openAIEndpoint), azureCredential);
         var searchClient = new SearchClient(new Uri(azureSearchEndpoint), indexName, azureCredential);
         var searchIndexClient = new SearchIndexClient(new Uri(azureSearchEndpoint), azureCredential);
         var documentAnalysisClient = new DocumentAnalysisClient(new Uri(azureSearchEndpoint), azureCredential);
@@ -93,7 +93,7 @@ public class AzureSearchEmbedServiceTest
         var blobContainer = "test";
 
         var azureCredential = new DefaultAzureCredential();
-        var openAIClient = new OpenAIClient(new Uri(openAIEndpoint), azureCredential);
+        var openAIClient = Shared.Services.ModelClientFactory.CreateAzure(new Uri(openAIEndpoint), azureCredential);
         var searchClient = new SearchClient(new Uri(azureSearchEndpoint), indexName, azureCredential);
         var searchIndexClient = new SearchIndexClient(new Uri(azureSearchEndpoint), azureCredential);
         var documentAnalysisClient = new DocumentAnalysisClient(new Uri(azureSearchEndpoint), azureCredential);
@@ -154,7 +154,7 @@ public class AzureSearchEmbedServiceTest
         var blobContainer = "test";
 
         var azureCredential = new DefaultAzureCredential();
-        var openAIClient = new OpenAIClient(new Uri(openAIEndpoint), azureCredential);
+        var openAIClient = Shared.Services.ModelClientFactory.CreateAzure(new Uri(openAIEndpoint), azureCredential);
         var searchClient = new SearchClient(new Uri(azureSearchEndpoint), indexName, azureCredential);
         var searchIndexClient = new SearchIndexClient(new Uri(azureSearchEndpoint), azureCredential);
         var documentAnalysisClient = new DocumentAnalysisClient(new Uri(azureFormRecognizerEndpoint), azureCredential);
@@ -204,7 +204,7 @@ public class AzureSearchEmbedServiceTest
         var blobContainer = nameof(EmbedBlobWithoutImageEmbeddingTestAsync).ToLower();
 
         var azureCredential = new DefaultAzureCredential();
-        var openAIClient = new OpenAIClient(new Uri(openAIEndpoint), azureCredential);
+        var openAIClient = Shared.Services.ModelClientFactory.CreateAzure(new Uri(openAIEndpoint), azureCredential);
         var searchClient = new SearchClient(new Uri(azureSearchEndpoint), indexName, azureCredential);
         var searchIndexClient = new SearchIndexClient(new Uri(azureSearchEndpoint), azureCredential);
         var documentAnalysisClient = new DocumentAnalysisClient(new Uri(azureFormRecognizerEndpoint), azureCredential);
@@ -264,7 +264,7 @@ public class AzureSearchEmbedServiceTest
         var blobContainer = nameof(EmbedImageBlobTestAsync).ToLower();
 
         var azureCredential = new DefaultAzureCredential();
-        var openAIClient = new OpenAIClient(new Uri(openAIEndpoint), azureCredential);
+        var openAIClient = Shared.Services.ModelClientFactory.CreateAzure(new Uri(openAIEndpoint), azureCredential);
         var searchClient = new SearchClient(new Uri(azureSearchEndpoint), indexName, azureCredential);
         var searchIndexClient = new SearchIndexClient(new Uri(azureSearchEndpoint), azureCredential);
         var documentAnalysisClient = new DocumentAnalysisClient(new Uri(azureFormRecognizerEndpoint), azureCredential);

@@ -7,9 +7,10 @@ public static class ErrorHints
     public static string Describe(Exception exception) => exception switch
     {
         OperationCanceledException => "Cancelled (Ctrl+C or the request timeout).",
-        RequestFailedException request => $"Azure error {request.Status}: {Hint(request.Status)}",
+        RequestFailedException request => $"Azure error {request.Status} ({request.ErrorCode ?? "unknown"}): {Hint(request.Status)}",
         ClientResultException result => $"Model error {result.Status}: {Hint(result.Status)}",
         AuthenticationFailedException => "Authentication failed. Check az login and the selected tenant.",
+        MissingMethodException missing => $"SDK compatibility error: {missing.Message}",
         InvalidOperationException invalid => invalid.Message,
         _ => $"Unexpected error ({exception.GetType().Name})."
     };

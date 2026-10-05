@@ -10,6 +10,9 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="ModelContextProtocol" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Agents.AI.Workflows" Version="1.23.0" />
+    <PackageReference Include="OpenTelemetry" Version="1.19.1" />
+    <PackageReference Include="Azure.Monitor.OpenTelemetry.Exporter" Version="1.9.0" />
     <ProjectReference Include="../VesselCopilot.Console/VesselCopilot.Console.csproj" />
     <ProjectReference Include="../VesselMcpServer/VesselMcpServer.csproj" ReferenceOutputAssembly="false" />
     <None Include="../VesselCopilot.Console/appsettings.json" Link="appsettings.json" CopyToOutputDirectory="PreserveNewest" />
