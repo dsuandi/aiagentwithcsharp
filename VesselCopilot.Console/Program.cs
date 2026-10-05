@@ -5,15 +5,19 @@ try
     string[] positional = args.TakeWhile(argument => !argument.StartsWith("--", StringComparison.Ordinal)).ToArray();
     AppConfig.Load(args.Skip(positional.Length).ToArray());
     Console.WriteLine(AppConfig.Describe());
-    using var cancellation = new CancellationTokenSource(TimeSpan.FromSeconds(60));
+    using var cancellation = new CancellationTokenSource();
     Console.CancelKeyPress += (_, eventArgs) => { eventArgs.Cancel = true; cancellation.Cancel(); };
+    using var request = CancellationTokenSource.CreateLinkedTokenSource(cancellation.Token);
+    request.CancelAfter(TimeSpan.FromSeconds(60));
     using IChatClient chatClient = ChatClientFactory.Create();
     string mode = positional.FirstOrDefault()?.ToLowerInvariant() ?? "hello";
     switch (mode)
     {
-        case "hello": await HelloDemo.RunAsync(chatClient, cancellation.Token); break;
-        case "compare": await ModelComparison.RunAsync(cancellation.Token); break;
-        default: Console.Error.WriteLine("Unknown mode. Use hello or compare."); Environment.ExitCode = 2; break;
+        case "hello": await HelloDemo.RunAsync(chatClient, request.Token); break;
+        case "compare": await ModelComparison.RunAsync(request.Token); break;
+        case "chat": await ChatLoop.RunAsync(chatClient, cancellation.Token); break;
+        case "assess": await VoyageAssessment.RunAsync(chatClient, request.Token); break;
+        default: Console.Error.WriteLine("Unknown mode. Use hello, compare, chat, or assess."); Environment.ExitCode = 2; break;
     }
 }
 catch (Exception exception)

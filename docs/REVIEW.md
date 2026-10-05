@@ -36,6 +36,7 @@ Review started on 2026-10-06 against the uploaded C# student guide, revised Octo
 | Lab | Build | Local Checks | Live Check |
 | --- | --- | --- | --- |
 | 1.1 | Release build passed without warnings or errors | 10 configuration checks passed | Fallback `workshop-primary` passed (31/64 tokens); primary `gpt-6-luna` timed out at 60 seconds |
+| 1.2 | Release compilation passed | 13 checks passed | Two streamed turns with follow-up context passed; typed assessment returned valid Medium risk |
 
 ## Verified Corrections
 
@@ -46,5 +47,7 @@ Review started on 2026-10-06 against the uploaded C# student guide, revised Octo
 - Bounded the hello and comparison calls with cancellation and made errors return nonzero exit codes. In the original guide, hello/comparison calls did not receive the dispatcher's cancellation token.
 - Confirmed that model and deployment names differ in the actual environment. The fallback model exists under deployment `workshop-primary`; the guide's literal fallback deployment would produce a not-found error here.
 - Audited Lab 1.1 dependencies: no known vulnerable packages were reported on 2026-10-06.
+- Added output limits and cancellation to structured assessment and streaming; validated typed model values before use.
+- Trimmed history by complete pairs so the retained conversation cannot begin with an orphaned assistant answer. The chat session itself is not limited to 60 seconds; each model turn is.
 
 Remaining labs, fresh provisioning, Search operations, deployed reference-app behavior, MCP, workflows, and telemetry delivery remain unverified.
