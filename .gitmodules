@@ -1,3 +1,0 @@
-[submodule "reference/azure-search-openai-demo-csharp"]
-	path = reference/azure-search-openai-demo-csharp
-	url = https://github.com/Azure-Samples/azure-search-openai-demo-csharp.git
