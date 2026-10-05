@@ -1,0 +1,16 @@
+**/bin/
+**/obj/
+.vs/
+.idea/
+.azure/
+.env
+.env.*
+!.env.example
+**/appsettings.Local.json
+**/appsettings.Development.json
+**/secrets.json
+*.user
+*.suo
+TestResults/
+artifacts/
+*.docx
