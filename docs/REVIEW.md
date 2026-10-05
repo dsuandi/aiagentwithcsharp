@@ -33,4 +33,18 @@ Review started on 2026-10-06 against the uploaded C# student guide, revised Octo
 
 ## Results
 
-Pending. No build, behavioral test, live model call, Search operation, deployed reference application, MCP exchange, workflow run, or Application Insights delivery is claimed yet.
+| Lab | Build | Local Checks | Live Check |
+| --- | --- | --- | --- |
+| 1.1 | Release build passed without warnings or errors | 10 configuration checks passed | Fallback `workshop-primary` passed (31/64 tokens); primary `gpt-6-luna` timed out at 60 seconds |
+
+## Verified Corrections
+
+- Pinned `Microsoft.Agents.AI.Foundry` to `1.23.0-preview.260928.1` and `Azure.Identity` to `1.21.0`. Azure.Identity 1.17.0 conflicted with credential types in the adapter's Azure.Core 1.62.0 dependency; the corrected graph compiles.
+- Explicitly opted into the guide's experimental Responses API with `OPENAI001`; other diagnostics remain enabled.
+- Replaced the deprecated managed identity constructor with `ManagedIdentityId.SystemAssigned`.
+- Separated positional modes/questions from configuration arguments before calling `AddCommandLine`. This also prevents settings overrides from entering a model prompt.
+- Bounded the hello and comparison calls with cancellation and made errors return nonzero exit codes. In the original guide, hello/comparison calls did not receive the dispatcher's cancellation token.
+- Confirmed that model and deployment names differ in the actual environment. The fallback model exists under deployment `workshop-primary`; the guide's literal fallback deployment would produce a not-found error here.
+- Audited Lab 1.1 dependencies: no known vulnerable packages were reported on 2026-10-06.
+
+Remaining labs, fresh provisioning, Search operations, deployed reference-app behavior, MCP, workflows, and telemetry delivery remain unverified.
