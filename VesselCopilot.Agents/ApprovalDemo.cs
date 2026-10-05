@@ -6,17 +6,19 @@ public static class ApprovalPrompt
 {
     public static bool IsApproved(string? answer) => answer?.Trim() is "y" or "Y";
 
-    public static bool Ask(FunctionCallContent call)
+    public static async Task<bool> AskAsync(FunctionCallContent call, CancellationToken cancellationToken,
+        TextReader? input = null, TextWriter? output = null)
     {
-        Console.WriteLine($"APPROVAL NEEDED: {call.Name}");
-        foreach (var argument in call.Arguments ?? new Dictionary<string, object?>())
-        {
-            string text = new((argument.Value?.ToString() ?? "").Where(character => !char.IsControl(character)).Take(200).ToArray());
-            Console.WriteLine($"  {argument.Key} = {text}");
-        }
-        Console.Write("Approve? (y/N): ");
-        bool approved = IsApproved(Console.ReadLine());
-        Console.WriteLine($"[audit] {DateTime.UtcNow:O} user={Environment.UserName} tool={call.Name} decision={(approved ? "APPROVED" : "DENIED")}");
+        cancellationToken.ThrowIfCancellationRequested();
+        input ??= Console.In;
+        output ??= Console.Out;
+        output.WriteLine($"APPROVAL NEEDED: {call.Name}");
+        output.WriteLine(System.Text.Json.JsonSerializer.Serialize(call.Arguments));
+        output.Write("Approve? (y/N): ");
+        string? answer = await Task.Run(input.ReadLine, CancellationToken.None).WaitAsync(cancellationToken);
+        cancellationToken.ThrowIfCancellationRequested();
+        bool approved = IsApproved(answer);
+        output.WriteLine($"[audit] {DateTime.UtcNow:O} user={Environment.UserName} tool={call.Name} decision={(approved ? "APPROVED" : "DENIED")}");
         return approved;
     }
 }
@@ -45,7 +47,7 @@ public static class ApprovalDemo
             bool denied = false;
             foreach (ToolApprovalRequestContent request in requests)
             {
-                bool approved = request.ToolCall is FunctionCallContent call && ApprovalPrompt.Ask(call);
+                bool approved = request.ToolCall is FunctionCallContent call && await ApprovalPrompt.AskAsync(call, cancellationToken);
                 denied |= !approved;
                 answers.Add(request.CreateResponse(approved));
             }

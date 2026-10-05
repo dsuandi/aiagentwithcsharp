@@ -10,4 +10,4 @@
 
 The client launches the compiled server DLL using an application-relative path, not `dotnet run`. This avoids build output contaminating stdout's JSON-RPC messages and removes the guide's current-directory requirement. An external installation may override `Mcp:ServerDll` with an absolute trusted path. Server logs go to stderr.
 
-Only y/Y approves; EOF and any other answer deny. Approval is bounded to three rounds, and rejection does not automatically prompt again. Draft IDs use GUIDs rather than a timestamp that can collide within one second. Drafts are synthetic in-memory demonstrations, not durable work orders or scheduled maintenance.
+Only y/Y approves; EOF and any other answer deny. The prompt shows the complete JSON-escaped arguments, not a truncated preview, and cancellation ends an unanswered approval wait without approving the tool. Approval is bounded to three rounds, and rejection does not automatically prompt again. Draft IDs use GUIDs rather than a timestamp that can collide within one second. Drafts are synthetic in-memory demonstrations, not durable work orders or scheduled maintenance.
