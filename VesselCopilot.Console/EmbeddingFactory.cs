@@ -1,4 +1,3 @@
-using Azure.AI.OpenAI;
 using Microsoft.Extensions.AI;
 
 public static class EmbeddingFactory
@@ -11,10 +10,8 @@ public static class EmbeddingFactory
     {
         if (AppConfig.Embedding.Dimensions < 1)
             throw new InvalidOperationException("Embedding:Dimensions must be positive.");
-        Uri endpoint = AppConfig.RequireHttpsUri("Foundry:OpenAIEndpoint", AppConfig.Foundry.OpenAIEndpoint);
         string deployment = AppConfig.Require("Embedding:DeploymentName", AppConfig.Embedding.DeploymentName);
-        return new AzureOpenAIClient(endpoint, CredentialFactory.Credential)
-            .GetEmbeddingClient(deployment).AsIEmbeddingGenerator();
+        return ChatClientFactory.CreateOpenAIClient().GetEmbeddingClient(deployment).AsIEmbeddingGenerator();
     }
 
     public static async Task<ReadOnlyMemory<float>> VectorAsync(string text, CancellationToken cancellationToken)

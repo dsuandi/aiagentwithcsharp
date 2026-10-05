@@ -178,7 +178,7 @@ internal static partial class Program
                {
                    var endpoint = o.AzureOpenAIServiceEndpoint;
                    ArgumentNullException.ThrowIfNullOrEmpty(endpoint);
-                   s_openAIClient = new OpenAIClient(
+                   s_openAIClient = Shared.Services.ModelClientFactory.CreateAzure(
                        new Uri(endpoint),
                        DefaultCredential);
                }

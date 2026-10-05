@@ -4,7 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <LangVersion>preview</LangVersion>
+    <LangVersion>12.0</LangVersion>
     <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <UserSecretsId>48daa172-8fe4-4b81-94b2-0d5a3a5ad30e</UserSecretsId>
