@@ -7,6 +7,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../VesselCopilot.Console/VesselCopilot.Console.csproj" />
+    <ProjectReference Include="../VesselCopilot.Agents/VesselCopilot.Agents.csproj" />
     <None Include="../VesselCopilot.Console/appsettings.json" Link="appsettings.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

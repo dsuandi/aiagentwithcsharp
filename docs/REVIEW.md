@@ -42,6 +42,7 @@ Review started on 2026-10-06 against the uploaded C# student guide, revised Octo
 | 2.2 | Workshop console compilation passed; upstream solution restore stalled and was stopped without a build result | 33 checks passed | Local-source live generation cited HW-07 and abstained on crew scheduling; Search and deployed reference-app checks blocked |
 | 2.3 | Core and optional quality-evaluation compilation passed | 37 checks passed | Search-dependent hit@3, before/after measurements, injection retrieval, and model-judge quality checks blocked |
 | 3.1 | Release build passed without warnings or errors | Reuses validated shared helpers | All five modes passed live on fallback: hello, stream, session, tools, assess |
+| 3.2 | Approval, agent, and MCP server compilation passed | 41 checks and three real MCP calls passed | Scripted y created one synthetic draft; empty input created zero; live agent combined local and MCP facts |
 
 ## Verified Corrections
 
@@ -67,6 +68,10 @@ Review started on 2026-10-06 against the uploaded C# student guide, revised Octo
 - Kept the injection fixture outside the default data folder and documented source/output cleanup, avoiding accidental indexing into the approved baseline corpus.
 - Added bounded agent run options and model-output validation to every Lab 3.1 mode. The original agent examples omitted output limits and cancellation for several runs.
 - Loaded user secrets from the entry project's assembly when helpers are shared, so the Day 3 project has its own secret scope.
+- Launched the prebuilt MCP server DLL rather than `dotnet run`, preventing restore/build stdout from corrupting stdio JSON-RPC. Used an application-relative absolute path and an explicit tool-name allowlist.
+- Tested MCP discovery and actual valid/invalid/unknown tool exchanges; corrected the checker to use MCP 2.2.0's `TextContentBlock` rather than an AI `TextContent`.
+- Bounded approval rounds, defaulted EOF/empty input to deny, stripped control characters from displayed argument values, and used GUID draft IDs to avoid same-second collisions.
+- Verified rejection produced zero drafts despite the model suggesting a retry. The application, not model text, stopped re-approval. Approval tests used scripted input on synthetic non-persisted drafts; no real work order was created.
 
 ## Resource Authorization
 

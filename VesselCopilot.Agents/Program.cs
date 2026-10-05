@@ -16,7 +16,10 @@ try
         case "session": await AgentBasics.SessionAsync(projectClient, cancellation.Token); break;
         case "tools": await AgentBasics.ToolsAsync(projectClient, cancellation.Token); break;
         case "assess": await AgentBasics.AssessAsync(projectClient, cancellation.Token); break;
-        default: Console.Error.WriteLine("Modes: hello, stream, session, tools, assess."); Environment.ExitCode = 2; break;
+        case "approve": await ApprovalDemo.RunAsync(projectClient, cancellation.Token); break;
+        case "mcp-check": await McpDemo.CheckAsync(cancellation.Token); break;
+        case "mcp": await McpDemo.RunAsync(projectClient, cancellation.Token); break;
+        default: Console.Error.WriteLine("Modes: hello, stream, session, tools, assess, approve, mcp, mcp-check."); Environment.ExitCode = 2; break;
     }
 }
 catch (Exception exception)

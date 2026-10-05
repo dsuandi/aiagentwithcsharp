@@ -81,6 +81,17 @@ Check("invented citation rejected", () => Equal(false, GroundedAnswer.HasValidCi
 Check("missing citation rejected", () => Equal(false, GroundedAnswer.HasValidCitations("Log hourly.", approved)));
 Check("exact abstention accepted", () => Equal(true, GroundedAnswer.HasValidCitations(GroundedAnswer.Abstention, approved)));
 Console.WriteLine($"{passed} total checks passed. No Azure calls were made.");
+Check("approval defaults to deny", () => Equal(false, ApprovalPrompt.IsApproved(null)));
+Check("empty approval denied", () => Equal(false, ApprovalPrompt.IsApproved("")));
+Check("only explicit y accepted", () => { Equal(true, ApprovalPrompt.IsApproved("Y")); Equal(false, ApprovalPrompt.IsApproved("yes")); });
+Check("invalid draft does not change state", () =>
+{
+    int before = VesselTools.DraftCount;
+    Equal(true, VesselTools.CreateMaintenanceDraft("VL-99X", "pump", "inspect").StartsWith("Error:"));
+    Equal(true, VesselTools.CreateMaintenanceDraft("VL-204", new string('x', 101), "inspect").StartsWith("Error:"));
+    Equal(before, VesselTools.DraftCount);
+});
+Console.WriteLine($"{passed} total checks passed. No Azure calls were made.");
 Check("ten evaluation questions supplied", () => Equal(10, RetrievalEval.Questions.Length));
 Check("expected source counted as hit", () => Equal(true, RetrievalEval.IsHit(new("question", "HW-07-heavy-weather"), approved)));
 Check("unanswerable questions excluded from hit metric", () => Equal(false, RetrievalEval.IsHit(new("question", ""), approved)));

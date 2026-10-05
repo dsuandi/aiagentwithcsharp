@@ -9,7 +9,9 @@
     <NoWarn>$(NoWarn);OPENAI001</NoWarn>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="ModelContextProtocol" Version="2.2.0" />
     <ProjectReference Include="../VesselCopilot.Console/VesselCopilot.Console.csproj" />
+    <ProjectReference Include="../VesselMcpServer/VesselMcpServer.csproj" ReferenceOutputAssembly="false" />
     <None Include="../VesselCopilot.Console/appsettings.json" Link="appsettings.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

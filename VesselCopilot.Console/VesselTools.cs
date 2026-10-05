@@ -3,6 +3,8 @@ using System.Text.RegularExpressions;
 
 public static partial class VesselTools
 {
+    private static int _draftCount;
+    public static int DraftCount => Volatile.Read(ref _draftCount);
     [GeneratedRegex(@"\AVL-[0-9]{3}\z")]
     private static partial Regex VesselIdPattern();
 
@@ -32,4 +34,19 @@ public static partial class VesselTools
     public static string GetApprovedProcedure([Description("Procedure code such as HW-07.")] string procedureCode) =>
         Procedures.TryGetValue(procedureCode ?? "", out string? procedure)
             ? procedure : "Error: unknown procedure code. Valid codes: HW-07, MX-02.";
+
+    [Description("Creates a synthetic DRAFT maintenance item, never schedules work. Requires human approval.")]
+    public static string CreateMaintenanceDraft(
+        [Description("Vessel identifier such as VL-204.")] string vesselId,
+        [Description("Equipment, at most 100 characters.")] string equipment,
+        [Description("Inspection description, at most 500 characters.")] string description)
+    {
+        if (!IsValidVesselId(vesselId)) return "Error: vesselId must look like VL-123.";
+        if (string.IsNullOrWhiteSpace(equipment) || equipment.Length > 100)
+            return "Error: equipment is required and must be at most 100 characters.";
+        if (string.IsNullOrWhiteSpace(description) || description.Length > 500)
+            return "Error: description is required and must be at most 500 characters.";
+        Interlocked.Increment(ref _draftCount);
+        return $"Synthetic draft MD-{Guid.NewGuid():N} created for {vesselId} ({equipment.Trim()}): {description.Trim()}. Status: DRAFT, awaiting planner review. Not persisted or scheduled.";
+    }
 }
