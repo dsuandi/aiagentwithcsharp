@@ -1,5 +1,6 @@
 import argparse
 from copy import deepcopy
+from io import BytesIO
 from pathlib import Path
 import re
 from xml.etree import ElementTree as ET
@@ -40,9 +41,39 @@ def main():
             versions[reference.attrib["Include"]] = reference.attrib["Version"]
     versions["Microsoft.Extensions.AI.Evaluation"] = "10.10.0"
     with ZipFile(options.source) as original:
-        document = ET.fromstring(original.read("word/document.xml"))
+        original_xml = original.read("word/document.xml")
+        namespaces = dict(value for event, value in ET.iterparse(BytesIO(original_xml), events=["start-ns"]))
+        for prefix, uri in namespaces.items():
+            ET.register_namespace(prefix, uri)
+        document = ET.fromstring(original_xml)
+        used_namespaces = {name[1:].split("}")[0] for element in document.iter()
+                           for name in [element.tag, *element.attrib] if name.startswith("{")}
+        for prefix, uri in namespaces.items():
+            if prefix and uri not in used_namespaces:
+                document.set(f"xmlns:{prefix}", uri)
         paragraphs = document.findall(".//w:p", NS)
+        parents = {child: parent for parent in document.iter() for child in parent}
         replacements = 0
+        for index, paragraph in enumerate(paragraphs):
+            style = paragraph.find("w:pPr/w:pStyle", NS)
+            text = "".join(node.text or "" for node in paragraph.findall(".//w:t", NS))
+            if style is None or style.attrib.get(f"{{{NAMESPACE}}}val") != "Caption":
+                continue
+            caption = re.match(r"(?:VesselMcpServer/)?([A-Za-z][\w.]*\.cs)(?:\s|$)", text)
+            if not caption:
+                continue
+            block = []
+            for candidate in paragraphs[index + 1:]:
+                candidate_style = candidate.find("w:pPr/w:pStyle", NS)
+                if candidate_style is None or candidate_style.attrib.get(f"{{{NAMESPACE}}}val") != "MacroText":
+                    break
+                block.append(candidate)
+            if block:
+                set_text(block[0], f"// Stable edition: use the complete tested {caption.group(1)} from this lab's Git branch and companion Markdown guide.")
+                for candidate in block[1:]:
+                    parents[candidate].remove(candidate)
+                replacements += 1
+        paragraphs = document.findall(".//w:p", NS)
         for paragraph in paragraphs:
             text = "".join(node.text or "" for node in paragraph.findall(".//w:t", NS))
             changed = text
@@ -52,7 +83,8 @@ def main():
                 changed = f"dotnet add package {package} --version {versions[package]}"
             elif "--prerelease" in text or "prerelease package" in text.lower() or "SDK is prerelease" in text:
                 changed = "Use the pinned stable package versions in the checkpoint project. Restore in locked mode; do not select preview or beta releases. See docs/STABLE-PACKAGES.md."
-            changed = changed.replace(".GetProjectOpenAIClient()", ".GetProjectOpenAIClient()")
+            elif "AsAIAgent" in text or "GetProjectResponsesClient" in text or "AsIEmbeddingGenerator" in text:
+                changed = "Stable model access: use ChatClientFactory.Create(), ChatClientFactory.CreateOpenAIClient(), and ChatClientAgent. The complete tested implementations are in the lab branch."
             if changed != text:
                 set_text(paragraph, changed)
                 replacements += 1

@@ -1,6 +1,6 @@
 # Lab 2.1: Ingest And Index
 
-This checkpoint is locally buildable; live Search validation is blocked in the review environment because no Search service exists and new resources are not authorized.
+The stable edition was tested against the existing Search service after the user assigned its data-plane roles: three synthetic chunks uploaded and all retrieval modes ran successfully. See STABLE-VALIDATION.md for the latest evidence.
 
 1. Switch to `lab-2.1-ingest-and-index` and retain the Day 1 settings.
 2. Have the instructor provide a Search service with RBAC enabled. Index creation requires Search Service Contributor, upload requires Search Index Data Contributor, and read-only queries require Search Index Data Reader.
