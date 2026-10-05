@@ -26,6 +26,6 @@ For the review environment, the fallback's actual deployment name was `workshop-
 
 ## Checkpoint Evidence
 
-The Release build completed without warnings or errors. A live fallback call produced a two-sentence RAG explanation and reported 31 input and 64 output tokens. A call to the primary `gpt-6-luna` deployment hit the 60-second limit; primary inference is not certified. The package vulnerability audit reported no known vulnerable packages on 2026-10-06.
+The Release build completed without warnings or errors. A live fallback call produced a two-sentence RAG explanation and reported 31 input and 64 output tokens. The initial primary call hit the 60-second limit; a later comparison with `AZURE_TOKEN_CREDENTIALS=AzureCliCredential` succeeded on both `gpt-6-luna` and the actual fallback deployment `workshop-primary`. This is a working configuration, not proof of what caused the first timeout. The package vulnerability audit reported no known vulnerable packages on 2026-10-06.
 
 The application exits nonzero on failure. This corrects the guide's dispatcher, which printed some service errors but could still report success to scripts.
