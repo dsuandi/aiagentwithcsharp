@@ -39,8 +39,9 @@ Review started on 2026-10-06 against the uploaded C# student guide, revised Octo
 | 1.2 | Release compilation passed | 13 checks passed | Two streamed turns with follow-up context passed; typed assessment returned valid Medium risk |
 | 1.3 | Release compilation passed | 20 checks passed | Default query invoked both functions and returned the exact synthetic position and HW-07 procedure |
 | 2.1 | Release compilation passed | 28 checks passed | Embeddings passed at 3072 dimensions on existing `text-embedding-3-large`; Search ingestion/retrieval blocked |
-| 2.2 | Workshop console compilation passed; upstream reference build still pending | 33 checks passed | Local-source live generation cited HW-07 and abstained on crew scheduling; Search and deployed reference-app checks blocked |
+| 2.2 | Workshop console compilation passed; upstream solution restore stalled and was stopped without a build result | 33 checks passed | Local-source live generation cited HW-07 and abstained on crew scheduling; Search and deployed reference-app checks blocked |
 | 2.3 | Core and optional quality-evaluation compilation passed | 37 checks passed | Search-dependent hit@3, before/after measurements, injection retrieval, and model-judge quality checks blocked |
+| 3.1 | Release build passed without warnings or errors | Reuses validated shared helpers | All five modes passed live on fallback: hello, stream, session, tools, assess |
 
 ## Verified Corrections
 
@@ -64,6 +65,8 @@ Review started on 2026-10-06 against the uploaded C# student guide, revised Octo
 - Pinned the official RAG reference app as a Git submodule; students must initialize submodules, and ZIP downloads alone are insufficient.
 - Supplied the complete ten-question ground-truth set, kept unanswerable questions out of hit@3, and tested top-three cutoff behavior. Three documents with k=3 are not a discriminating retrieval benchmark.
 - Kept the injection fixture outside the default data folder and documented source/output cleanup, avoiding accidental indexing into the approved baseline corpus.
+- Added bounded agent run options and model-output validation to every Lab 3.1 mode. The original agent examples omitted output limits and cancellation for several runs.
+- Loaded user secrets from the entry project's assembly when helpers are shared, so the Day 3 project has its own secret scope.
 
 ## Resource Authorization
 

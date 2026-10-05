@@ -12,14 +12,14 @@ public static class AppConfig
     public static EmbeddingSettings Embedding { get; private set; } = new();
     public static SearchSettings Search { get; private set; } = new();
 
-    public static void Load(string[] args)
+    public static void Load(string[] args, System.Reflection.Assembly? applicationAssembly = null)
     {
         string environment = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") ?? "Development";
         _config = new ConfigurationBuilder()
             .SetBasePath(AppContext.BaseDirectory)
             .AddJsonFile("appsettings.json", optional: false)
             .AddJsonFile($"appsettings.{environment}.json", optional: true)
-            .AddUserSecrets(typeof(AppConfig).Assembly, optional: true)
+            .AddUserSecrets(applicationAssembly ?? typeof(AppConfig).Assembly, optional: true)
             .AddEnvironmentVariables()
             .AddCommandLine(args)
             .Build();
