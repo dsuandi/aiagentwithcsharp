@@ -8,7 +8,7 @@ public static class SearchDemo
     {
         var options = new SearchOptions { Size = TopK };
         foreach (string field in new[] { "id", "title", "docType", "revision", "content" }) options.Select.Add(field);
-        if (vector is not null)
+        if (vector is not null && !vector.Value.IsEmpty)
             options.VectorSearch = new()
             {
                 Queries = { new VectorizedQuery(vector.Value) { KNearestNeighborsCount = TopK, Fields = { "contentVector" } } }

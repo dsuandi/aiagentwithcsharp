@@ -8,7 +8,12 @@ public static class QualityEval
     {
         const string question = "How often must the watch log position during heavy weather?";
         GroundedResult grounded = await GroundedAnswer.AskAsync(chatClient, question, cancellationToken);
-        var configuration = new ChatConfiguration(chatClient);
+        IChatClient judge = chatClient.AsBuilder().ConfigureOptions(options =>
+        {
+            options.Temperature = null;
+            options.TopP = null;
+        }).Build();
+        var configuration = new ChatConfiguration(judge);
         List<ChatMessage> messages = [new(ChatRole.User, question)];
         var response = new ChatResponse(new ChatMessage(ChatRole.Assistant, grounded.Answer));
         EvaluationResult relevance = await new RelevanceEvaluator().EvaluateAsync(messages, response,

@@ -2,8 +2,8 @@
 
 using System.Diagnostics;
 
-s_rootCommand.SetHandler(
-    async (context) =>
+s_rootCommand.SetAction(
+    async (context, cancellationToken) =>
     {
         var options = GetParsedAppOptions(context);
         if (options.RemoveAll)
@@ -29,7 +29,7 @@ s_rootCommand.SetHandler(
                 ? results.Files.Select(f => f.Path).ToArray()
                 : Array.Empty<string>();
 
-            context.Console.WriteLine($"Processing {files.Length} files...");
+            options.Console.WriteLine($"Processing {files.Length} files...");
 
             var tasks = Enumerable.Range(0, files.Length)
                 .Select(i =>
@@ -62,9 +62,10 @@ s_rootCommand.SetHandler(
                 await UploadBlobsAndCreateIndexAsync(options, fileName, embedService);
             }
         }
+        return 0;
     });
 
-return await s_rootCommand.InvokeAsync(args);
+return await s_rootCommand.Parse(args).InvokeAsync();
 
 static async ValueTask RemoveBlobsAsync(
     AppOptions options, string? fileName = null)

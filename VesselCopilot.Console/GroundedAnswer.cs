@@ -44,7 +44,9 @@ public static partial class GroundedAnswer
         ChatResponse response = await chatClient.GetResponseAsync($"{sources}\nQuestion: {question.Trim()}",
             new ChatOptions { Instructions = Rules, MaxOutputTokens = AppConfig.Model.MaxOutputTokens }, cancellationToken);
         if (!HasValidCitations(response.Text, selected))
-            throw new InvalidOperationException("The grounded answer omitted citations or cited an unknown source; it was not displayed.");
+            throw new InvalidOperationException($"The grounded answer failed citation validation and was not displayed. " +
+                $"Text characters: {response.Text.Length}; citations: {Citations().Matches(response.Text).Count}; " +
+                $"retrieved source IDs: {string.Join(", ", selected.Select(document => document.Id))}.");
         return new(response.Text, sources);
     }
 

@@ -18,6 +18,6 @@ internal record class AppOptions(
     string? FormRecognizerServiceEndpoint,
     string? ComputerVisionServiceEndpoint,
     bool Verbose,
-    IConsole Console) : AppConsole(Console);
+    TextWriter Console) : AppConsole(Console);
 
-internal record class AppConsole(IConsole Console);
+internal record class AppConsole(TextWriter Console);
