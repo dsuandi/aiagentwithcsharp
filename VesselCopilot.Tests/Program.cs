@@ -16,6 +16,12 @@ void Equal<T>(T expected, T actual)
     if (!EqualityComparer<T>.Default.Equals(expected, actual))
         throw new Exception($"Expected {expected}; got {actual}.");
 }
+async Task CheckAsync(string name, Func<Task> check)
+{
+    await check();
+    Console.WriteLine($"PASS: {name}");
+    passed++;
+}
 
 Check("missing setting rejected", () => Reject(() => AppConfig.Require("test", null)));
 Check("placeholder rejected", () => Reject(() => AppConfig.Require("test", "<resource>")));
@@ -81,6 +87,36 @@ Check("invented citation rejected", () => Equal(false, GroundedAnswer.HasValidCi
 Check("missing citation rejected", () => Equal(false, GroundedAnswer.HasValidCitations("Log hourly.", approved)));
 Check("exact abstention accepted", () => Equal(true, GroundedAnswer.HasValidCitations(GroundedAnswer.Abstention, approved)));
 Console.WriteLine($"{passed} total checks passed. No Azure calls were made.");
+await CheckAsync("approval shows the full executable description", async () =>
+{
+    var output = new StringWriter();
+    string description = new string('x', 220) + " IMPORTANT-INSPECTION-SUFFIX";
+    await ApprovalPrompt.AskAsync(new Microsoft.Extensions.AI.FunctionCallContent("test-call", "CreateMaintenanceDraft",
+        new Dictionary<string, object?> { ["vesselId"] = "VL-204", ["equipment"] = "pump", ["description"] = description }),
+        CancellationToken.None, new StringReader("y\n"), output);
+    Equal(true, output.ToString().Contains("IMPORTANT-INSPECTION-SUFFIX"));
+});
+await CheckAsync("unanswered approval honors cancellation with zero drafts", async () =>
+{
+    using var cancellation = new CancellationTokenSource();
+    using var reader = new BlockingApprovalReader();
+    int before = VesselTools.DraftCount;
+    Task<bool> pending = ApprovalPrompt.AskAsync(new Microsoft.Extensions.AI.FunctionCallContent("cancel-test", "CreateMaintenanceDraft"),
+        cancellation.Token, reader, new StringWriter());
+    await reader.Started.Task.WaitAsync(TimeSpan.FromSeconds(5));
+    cancellation.Cancel();
+    try
+    {
+        await pending.WaitAsync(TimeSpan.FromSeconds(5));
+        throw new Exception("Approval did not cancel.");
+    }
+    catch (OperationCanceledException) { Equal(before, VesselTools.DraftCount); }
+    finally { reader.Release.Set(); }
+});
+Check("knowledge returns approved revision", () => Equal(true, KnowledgeTools.SearchKnowledgeBase("engine temperature").Contains("MX-02 rev 2")));
+Check("knowledge rejects long queries", () => Equal(true, KnowledgeTools.SearchKnowledgeBase(new string('x', 201)).StartsWith("Error:")));
+Check("knowledge does not invent missing procedures", () => Equal("No approved procedure found for that query.", KnowledgeTools.SearchKnowledgeBase("crew schedule")));
+Console.WriteLine($"{passed} total checks passed. No Azure calls were made.");
 Check("approval defaults to deny", () => Equal(false, ApprovalPrompt.IsApproved(null)));
 Check("empty approval denied", () => Equal(false, ApprovalPrompt.IsApproved("")));
 Check("only explicit y accepted", () => { Equal(true, ApprovalPrompt.IsApproved("Y")); Equal(false, ApprovalPrompt.IsApproved("yes")); });
@@ -98,3 +134,15 @@ Check("unanswerable questions excluded from hit metric", () => Equal(false, Retr
 Check("result below top three excluded", () => Equal(false, RetrievalEval.IsHit(new("question", "HW-07-heavy-weather"),
     new[] { new VesselChunk { Title = "A" }, new VesselChunk { Title = "B" }, new VesselChunk { Title = "C" }, approved[0] })));
 Console.WriteLine($"{passed} total checks passed. No Azure calls were made.");
+
+sealed class BlockingApprovalReader : TextReader
+{
+    public TaskCompletionSource Started { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
+    public ManualResetEventSlim Release { get; } = new(false);
+    public override string? ReadLine()
+    {
+        Started.TrySetResult();
+        Release.Wait();
+        return "y";
+    }
+}
