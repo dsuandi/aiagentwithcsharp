@@ -17,7 +17,8 @@ try
         case "compare": await ModelComparison.RunAsync(request.Token); break;
         case "chat": await ChatLoop.RunAsync(chatClient, cancellation.Token); break;
         case "assess": await VoyageAssessment.RunAsync(chatClient, request.Token); break;
-        default: Console.Error.WriteLine("Unknown mode. Use hello, compare, chat, or assess."); Environment.ExitCode = 2; break;
+        case "tools": await ToolDemo.RunAsync(chatClient, string.Join(" ", positional.Skip(1)), request.Token); break;
+        default: Console.Error.WriteLine("Unknown mode. Use hello, compare, chat, assess, or tools."); Environment.ExitCode = 2; break;
     }
 }
 catch (Exception exception)

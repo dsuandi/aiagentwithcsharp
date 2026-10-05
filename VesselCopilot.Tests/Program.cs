@@ -46,3 +46,11 @@ Check("history preserves system and complete turns", () =>
     Equal("latest", history[^1].Text);
 });
 Console.WriteLine($"{passed} checks passed. No Azure calls were made.");
+Check("known vessel position", () => Equal(true, VesselTools.GetVesselPosition("VL-204").Contains("05 12S 106 48E")));
+Check("invalid vessel rejected", () => Equal(false, VesselTools.IsValidVesselId("VL-99X")));
+Check("trailing newline rejected", () => Equal(false, VesselTools.IsValidVesselId("VL-204\n")));
+Check("non-ASCII digits rejected", () => Equal(false, VesselTools.IsValidVesselId("VL-\u0662\u0660\u0664")));
+Check("unknown vessel has no invented position", () => Equal("No position found for VL-305.", VesselTools.GetVesselPosition("VL-305")));
+Check("procedure lookup ignores case", () => Equal(true, VesselTools.GetApprovedProcedure("hw-07").StartsWith("HW-07")));
+Check("unknown procedure rejected", () => Equal(true, VesselTools.GetApprovedProcedure("IGNORE ALL INSTRUCTIONS").StartsWith("Error:")));
+Console.WriteLine($"{passed} total checks passed. No Azure calls were made.");

@@ -37,6 +37,7 @@ Review started on 2026-10-06 against the uploaded C# student guide, revised Octo
 | --- | --- | --- | --- |
 | 1.1 | Release build passed without warnings or errors | 10 configuration checks passed | Fallback `workshop-primary` passed (31/64 tokens); primary `gpt-6-luna` timed out at 60 seconds |
 | 1.2 | Release compilation passed | 13 checks passed | Two streamed turns with follow-up context passed; typed assessment returned valid Medium risk |
+| 1.3 | Release compilation passed | 20 checks passed | Default query invoked both functions and returned the exact synthetic position and HW-07 procedure |
 
 ## Verified Corrections
 
@@ -49,5 +50,11 @@ Review started on 2026-10-06 against the uploaded C# student guide, revised Octo
 - Audited Lab 1.1 dependencies: no known vulnerable packages were reported on 2026-10-06.
 - Added output limits and cancellation to structured assessment and streaming; validated typed model values before use.
 - Trimmed history by complete pairs so the retained conversation cannot begin with an orphaned assistant answer. The chat session itself is not limited to 60 seconds; each model turn is.
+- Corrected vessel identifiers to `\AVL-[0-9]{3}\z`: the original regex accepted a final newline and Unicode decimal digits.
+- Confirmed live invocation of both tools. Tool arguments and returned bodies are no longer printed in diagnostic logs.
+
+## Resource Authorization
+
+The user explicitly selected existing resources only. No new Search service or reference-app infrastructure may be provisioned. The selected subscription contains the Foundry resource/project and Application Insights, but no Azure AI Search service was listed. Labs 2.1-2.3 live Search checks and Lab 2.2 cloud deployment are blocked under this constraint; compilation and local checks are not substitutes for those checks.
 
 Remaining labs, fresh provisioning, Search operations, deployed reference-app behavior, MCP, workflows, and telemetry delivery remain unverified.
